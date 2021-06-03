@@ -13,7 +13,7 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   final textEditingController = TextEditingController();
-  File _image;
+  File? _image;
   final picker =ImagePicker();
 
   @override
@@ -48,16 +48,18 @@ class _CreatePageState extends State<CreatePage> {
   }
 
  Widget _buildBody() {
-    return Column(
-      children: <Widget>[
-        _image ==null ? Text('No Image'): Image.file(_image),
-        TextField(
-          decoration: InputDecoration(hintText: '내용을 입력하세요'),
-          controller: textEditingController,
-        )
+    return SingleChildScrollView(
+            child: Column (
+            children: <Widget>[
+              _image ==null ? Text('No Image'): Image.file(_image!),
+              TextField(
+                decoration: InputDecoration(hintText: '내용을 입력하세요'),
+                controller: textEditingController,
+              )
 
-      ],
-    );
+              ],
+            ),
+            );
  }
 
 
