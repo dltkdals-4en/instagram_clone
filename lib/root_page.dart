@@ -1,26 +1,31 @@
-import 'package:flutter/material.dart';
-import 'package:instagram_clone/login_page.dart';
-import 'package:instagram_clone/tab_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+
+import 'login_page.dart';
+import 'tab_page.dart';
 
 class RootPage extends StatelessWidget {
-  const RootPage({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    print('root_page created');
+    return _handleCurrentScreen();
+  }
+
+  Widget _handleCurrentScreen() {
     return StreamBuilder<User>(
-
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print("snapshot = " + snapshot.connectionState.toString());
+      // stream: FirebaseAuth.instance.authStateChanges(),
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container();
+        } else {
           if (snapshot.hasData) {
-
             return TabPage(snapshot.data);
-
           }
           return LoginPage();
-
+        }
       },
     );
   }
-
- }
+}

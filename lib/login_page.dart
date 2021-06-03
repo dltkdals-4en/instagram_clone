@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 
 
 class LoginPage extends StatefulWidget {
@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,11 +42,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<UserCredential> _handleSignIn() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    print('google user = ' + googleUser.toString());
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-    print('google auth = ' + googleAuth.toString());
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,

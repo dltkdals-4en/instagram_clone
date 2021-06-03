@@ -1,113 +1,145 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  final User user;
+
+  AccountPage(this.user);
 
   @override
   _AccountPageState createState() => _AccountPageState();
 }
 
 class _AccountPageState extends State<AccountPage> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  int post = 0;
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      body: _buildBody(),
-    );
+  void initState() {
+    super.initState();
+    FirebaseFirestore.instance.collection('post').where('email', isEqualTo: widget.user.email)
+        .get()
+        .then((querySnapshot) {
+      setState(() {
+        post = querySnapshot.docs.length;
+      });
+    });
   }
 
-  AppBar _buildAppBar() {
-    return AppBar(
-      actions: <Widget>[
-        IconButton(
-            onPressed: () {
-
-            },
-            icon: Icon(Icons.exit_to_app))
-      ],
-    );
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(appBar: _buildAppBar(), body: _buildBody());
   }
 
   Widget _buildBody() {
-    return Padding(
+    return Container(
       padding: EdgeInsets.all(16.0),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         children: <Widget>[
-          Column(
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Stack(
+              Column(
                 children: <Widget>[
-                  SizedBox(
-                    width: 80,
-                    height: 80,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.black,
-                    ),
-                  ),
-                  Container(
-                    width: 80,
-                    height: 80,
-                    alignment: Alignment.bottomRight,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 28.0,
-                          height: 28.0,
-                          child: FloatingActionButton(
-                            onPressed: () {
-
-                            },
-                            backgroundColor: Colors.white,
-
-
-                          ),
-                        ),SizedBox(
-                          width: 25.0,
-                          height: 25.0,
-                          child: FloatingActionButton(
-                            onPressed: () {
-
-                            },
-                            backgroundColor: Colors.blue,
-                            child: Icon(Icons.add),
-
+                  Stack(
+                    children: <Widget>[
+                      SizedBox(
+                        width: 80.0,
+                        height: 80.0,
+                        child: GestureDetector(
+                          onTap: () => print('이미지 클릭'),
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(widget.user.photoURL),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        width: 80.0,
+                        height: 80.0,
+                        alignment: Alignment.bottomRight,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            SizedBox(
+                              width: 28.0,
+                              height: 28.0,
+                              child: FloatingActionButton(
+                                onPressed: null,
+                                backgroundColor: Colors.white,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 25.0,
+                              height: 25.0,
+                              child: FloatingActionButton(
+                                backgroundColor: Colors.blue,
+                                onPressed: null,
+                                child: Icon(Icons.add),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  Text(
+                    widget.user.displayName,
+                    textAlign: TextAlign.center,
+                    style:
+                    TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                  )
                 ],
               ),
               Padding(
-              padding: EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('$post\n게시물',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18.0)),
               ),
-              Text('name',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
-
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('0\n팔로워',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18.0)),
               ),
-
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text('0\n팔로잉',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18.0)),
+              ),
             ],
-          ),
-          Text('0\n게시물',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18.0),
-          ),
-          Text('0\n팔로워',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18.0),
-          ),
-          Text('0\n팔로잉',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 18.0),
           ),
         ],
       ),
+    );
+  }
 
+  Widget _buildAppBar() {
+    return AppBar(
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.exit_to_app),
+          color: Colors.black,
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+            _googleSignIn.signOut();
+          },
+        )
+      ],
+      backgroundColor: Colors.white,
+      title: Text(
+        '𝔦𝔫𝔰𝔱𝔞𝔤𝔯𝔞𝔪 𝔠𝔩𝔬𝔫',
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      ),
     );
   }
 }
