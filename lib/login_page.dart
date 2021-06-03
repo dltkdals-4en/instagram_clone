@@ -4,8 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-// 폰트: https://lingojam.com/FontsForInstagram
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -41,13 +42,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<UserCredential> _handleSignIn() async {
-    GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    print('google user = ' + googleUser.toString());
 
+    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    print('google auth = ' + googleAuth.toString());
     final OAuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
     );
+
+    print('google credential = ' + credential.toString());
+
 
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
