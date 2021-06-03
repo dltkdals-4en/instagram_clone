@@ -67,6 +67,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildListItem(context, document) {
     return Hero(
       tag: document['photoUrl'],
+
       child: Material(
         color: Colors.transparent,
         child: InkWell(

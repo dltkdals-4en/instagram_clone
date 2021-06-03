@@ -3,6 +3,7 @@ import 'package:instagram_clone/account_page.dart';
 import 'package:instagram_clone/home_page.dart';
 import 'package:instagram_clone/search_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:instagram_clone/test_home.dart';
 
 class TabPage extends StatefulWidget {
   final User user;
@@ -21,7 +22,8 @@ class _TabPageState extends State<TabPage> {
     _pages = [
       HomePage(widget.user),
       SearchPage(widget.user),
-      AccountPage(widget.user)
+      AccountPage(widget.user),
+      TestHome(widget.user),
     ];
   }
   @override
@@ -32,6 +34,7 @@ class _TabPageState extends State<TabPage> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           fixedColor: Colors.black,
+          backgroundColor: Colors.black,
           onTap: _onItemTapped,
           currentIndex: _selectedIndex,
           items: <BottomNavigationBarItem>[
@@ -43,6 +46,9 @@ class _TabPageState extends State<TabPage> {
             ),
             BottomNavigationBarItem(
                 icon: Icon(Icons.account_circle), label:'account'
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home), label:'testhome'
             ),
         ],
         ),
